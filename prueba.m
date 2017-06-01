@@ -1,39 +1,67 @@
+pkg load signal
+pkg load control
+
 % crear la figura
-f = figure ("position", [ 250 150 600 500 ]);
-% crear el grupo de botones
-gp = uibuttongroup (f, "Position", [ 0 0 1 1 ]);
+f = figure ("position", [ 250 150 600 580 ]);
+
+gp = uibuttongroup(f, "Position", [0 0 1 1])
+
+metodoEntrada = uibuttongroup(gp, "Position", [0 0 1 1])
+
 % test funcion de transferencia
-tft = uicontrol (gp, "style", "text", "string", "Ingrese funcion transferencia","position",[ 5 450 300 40 ], "horizontalalignment", "left");
+tft = uicontrol (metodoEntrada, "style", "text", "string", "Ingrese funcion transferencia","position",[ 5 540 300 40 ], "horizontalalignment", "left");
+
+rbtnPolinomios = uicontrol (metodoEntrada, "style", "radiobutton", "string", "Mediante Polinomios Numerador y Denominador", "Position", [ 10 520 300 20 ]);
+rbtnPolosCeros = uicontrol (metodoEntrada, "style", "radiobutton", "string", "Mediante polos, ceros y ganancia", "Position", [ 10 500 300 20 ]);
+
+
 % input funcion de transferencia
-inputValue = uicontrol (gp, "style", "edit", "string", "","position",[ 5 400 300 40 ], "horizontalalignment", "left");
-% crear título
-c1 = uicontrol (gp, "style", "text", 
-                "string", "Por favor, seleccione una opción del menú", 
-                "position",[ 100 350 300 40 ]);
+uicontrol(metodoEntrada, "style", "text", "string", "Pol. Numerador", "position", [5 450 110 30])
+uicontrol(metodoEntrada, "style", "text", "string", "Pol. Denominador", "position", [280 450 120 30])
+polNumerador = uicontrol (metodoEntrada, "style", "edit", "position",[120 450 150 30], "horizontalalignment", "left");
+polDenominador = uicontrol (metodoEntrada, "style", "edit","position",[400 450 150 30], "horizontalalignment", "left");
+
+uicontrol(metodoEntrada, "style", "text", "string", "Polos", "position", [5 410 100 30])
+uicontrol(metodoEntrada, "style", "text", "string", "Ceros", "position", [220 410 100 30])
+uicontrol(metodoEntrada, "style", "text", "string", "Ganancia", "position", [410 410 100 30])
+ceros = uicontrol(metodoEntrada, "style", "edit", "position", [120 410 120 30], "horizontalalignment", "left")
+polos = uicontrol(metodoEntrada, "style", "edit", "position", [300 410 120 30], "horizontalalignment", "left")
+ganancia = uicontrol(metodoEntrada, "style", "edit", "position", [500 410 80 30], "horizontalalignment", "left")
+
+
+% crear titulo
+c1 = uicontrol (f, "style", "text", 
+                "string", "Por favor, seleccione una opcion del menu:", 
+                "position",[ 150 350 300 40 ]);
+
+                
+                
 % crear los botones de funcionalidad
-r1 = uicontrol (gp, "style", "radiobutton",
-                "string", "Obtener expresión de la función transferencia", 
-                "Position", [ 10 310 300 20 ]);
-r2 = uicontrol (gp, "style", "radiobutton",
-                "string", "Obtener características de la función", 
-                "Position", [ 10 280 300 20 ]);
-c1 = uicontrol (gp, "style", "checkbox", "string", "Indicar polos", 
-                "position",[ 40 250 150 20 ] );
-c2 = uicontrol (gp, "style", "checkbox", "string", "Indicar ceros", 
+
+
+rbtnExpresion = uicontrol (gp, "style", "radiobutton",
+                "string", "Obtener expresion de la funcion transferencia", 
+                "Position", [ 40 310 300 20 ]);
+rbtnIndicarPolos = uicontrol (gp, "style", "radiobutton", "string", "Indicar polos", 
+                "position",[ 40 280 150 20 ] );
+rbtnIndicarCeros = uicontrol (gp, "style", "radiobutton", "string", "Indicar ceros", 
+                "position",[ 40 250 150 20 ]);
+rbtnIndiciarGanancia = uicontrol (gp, "style", "radiobutton", "string", "Marcar ganancia", 
                 "position",[ 40 220 150 20 ]);
-c3 = uicontrol (gp, "style", "checkbox", "string", "Marcar ganancia", 
-                "position",[ 40 190 150 20 ]);
-c4 = uicontrol (gp, "style", "checkbox", "string", "Obtener expresión con sus polos, ceros y ganancia", 
+rbtnExpresionPolosCeros = uicontrol (gp, "style", "radiobutton", "string", "Obtener expresion con sus polos, ceros y ganancia", 
+                "position",[ 40 190 350 20 ]);
+rbtnGrafico = uicontrol (gp, "style", "radiobutton", "string", "Mostrar graficamente la distribucion de polos y ceros", 
                 "position",[ 40 160 350 20 ]);
-c5 = uicontrol (gp, "style", "checkbox", "string", "Mostrar gráficamente la distribució de polos y ceros", 
+rbtnEstabilidad = uicontrol (gp, "style", "radiobutton", "string", "Indicar estabilidad del sistema", 
                 "position",[ 40 130 350 20 ]);
-c6 = uicontrol (gp, "style", "checkbox", "string", "Indicar estabilidad del sistema", 
-                "position",[ 40 100 350 20 ]);
+rbtnObtenerTodo = uicontrol (gp, "style", "radiobutton", "string", "Obtener todas las caracteristicas de la funcion transferencia", 
+                "position",[ 40 130 360 20 ]);
+                
+                
 % crear los botones de decisión
 %b1 = uicontrol (f, "string", "Aceptar", "position",[50 20 100 40], {@myfunction, "1"});
-b1 = uicontrol (f, "string", "Aceptar", "position",[50 20 100 40], "callback", "myfunction(inputValue)");
-b2 = uicontrol (f, "string", "Ingresar nueva función", "position",[168 20 150 40]);
-b3 = uicontrol (f, "string", "Finalizar", "position",[335 20 100 40], "callback", "close");
+b1 = uicontrol (f, "string", "Aceptar", "position",[120 50 100 40], "callback", "myfunction(inputValue)");
+b3 = uicontrol (f, "string", "Finalizar", "position",[350 50 100 40], "callback", "close");
 
 function myfunction(elem)
   
